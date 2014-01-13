@@ -1,3 +1,5 @@
+Copyright (c) 2014 - Philippe Laulheret, [Second Story] (http://www.secondstory.com)
+
 This openFrameworks addon is distributed under the MIT License. This gives everyone the freedoms to use this addon in any context: commercial or non-commercial, public or private, open or closed source.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
