@@ -36,7 +36,9 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
     m_pDevice(NULL),
     m_pDeviceManager(NULL),
     m_pSurfaceRepaint(NULL),
-	gl_handleD3D(NULL)
+	gl_handleD3D(NULL),
+	d3d_shared_texture(NULL),
+	d3d_shared_surface(NULL)
 {
     SetRectEmpty(&m_rcDestRect);
 
@@ -75,7 +77,6 @@ D3DPresentEngine::~D3DPresentEngine()
 }
 
 
-
 //-----------------------------------------------------------------------------
 // Texture sharing code
 //-----------------------------------------------------------------------------
@@ -95,12 +96,27 @@ bool D3DPresentEngine::createSharedTexture(int w, int h, int textureID)
 	}
 
 	gl_name=textureID;
-	m_pDevice->CreateRenderTarget(w,h,D3DFMT_A8R8G8B8 ,D3DMULTISAMPLE_NONE,D3DPOOL_DEFAULT,false, &d3d_shared_surface,0);
+	
+	
+	HRESULT hr = m_pDevice->CreateTexture(w,h,1,D3DUSAGE_RENDERTARGET,D3DFMT_A8R8G8B8,D3DPOOL_DEFAULT,&d3d_shared_texture,0);
 
-	gl_handle = wglDXRegisterObjectNV(gl_handleD3D, d3d_shared_surface,
+	if (FAILED(hr))
+	{
+		printf("ofxWMFVideoplayer : Error creating D3DTexture\n");
+		return false;
+	}
+
+
+	d3d_shared_texture->GetSurfaceLevel(0,&d3d_shared_surface);
+		
+	gl_handle = wglDXRegisterObjectNV(gl_handleD3D, d3d_shared_texture,
 		gl_name,
-		GL_TEXTURE_RECTANGLE_ARB,
+		GL_TEXTURE_RECTANGLE,
 		WGL_ACCESS_READ_ONLY_NV);
+
+	
+
+	
 
 	if (!gl_handle) 
 	{
@@ -117,6 +133,7 @@ void D3DPresentEngine::releaseSharedTexture()
 	wglDXUnregisterObjectNV(gl_handleD3D,gl_handle);
 	//glDeleteTextures(1, &gl_name);
 	SAFE_RELEASE(d3d_shared_surface);
+	SAFE_RELEASE(d3d_shared_texture);
 
 }
 bool D3DPresentEngine::lockSharedTexture()
@@ -582,6 +599,7 @@ HRESULT D3DPresentEngine::CreateD3DDevice()
     }
     else
     {
+		printf("Software cap, no bueno\n");
         vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
     }
 
