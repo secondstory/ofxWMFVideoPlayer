@@ -96,9 +96,11 @@ bool D3DPresentEngine::createSharedTexture(int w, int h, int textureID)
 	}
 
 	gl_name=textureID;
+
+	HANDLE sharedHandle = NULL; //We need to create a shared handle for the ressource, otherwise the extension fails on ATI/Intel cards
 	
 	
-	HRESULT hr = m_pDevice->CreateTexture(w,h,1,D3DUSAGE_RENDERTARGET,D3DFMT_A8R8G8B8,D3DPOOL_DEFAULT,&d3d_shared_texture,0);
+	HRESULT hr = m_pDevice->CreateTexture(w,h,1,D3DUSAGE_RENDERTARGET,D3DFMT_A8R8G8B8,D3DPOOL_DEFAULT,&d3d_shared_texture,&sharedHandle);
 
 	if (FAILED(hr))
 	{
@@ -106,6 +108,13 @@ bool D3DPresentEngine::createSharedTexture(int w, int h, int textureID)
 		return false;
 	}
 
+	if (!sharedHandle)
+	{
+		printf("ofxWMFVideoplayer : Error creating D3D sahred handle\n");
+		return false;
+	}
+	
+	wglDXSetResourceShareHandleNV(d3d_shared_texture,sharedHandle);
 
 	d3d_shared_texture->GetSurfaceLevel(0,&d3d_shared_surface);
 		
