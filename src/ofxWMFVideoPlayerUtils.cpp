@@ -17,7 +17,7 @@
 
 
 #include "Presenter.h"
-#include "atlcomcli.h"
+
 
 template <class Q>
 HRESULT GetEventObject(IMFMediaEvent *pEvent, Q **ppObject)
@@ -181,9 +181,9 @@ HRESULT CPlayer::OpenMultipleURL(vector<const WCHAR *> &urls)
 
 
 	//Some lolilol for the sequencer that's coming from the outerspace (see topoEdit src code)
-	CComPtr<IMFMediaSource> spSrc;
-	CComPtr<IMFPresentationDescriptor> spPD;
-	CComPtr<IMFMediaSourceTopologyProvider> spSrcTopoProvider;
+	IMFMediaSource* spSrc = NULL;
+	IMFPresentationDescriptor* spPD = NULL;
+	IMFMediaSourceTopologyProvider* spSrcTopoProvider = NULL;
 
 
 
@@ -965,7 +965,8 @@ HRESULT CreateMediaSinkActivate(
 
 		hr = MFCreateVideoRenderer( __uuidof(IMFMediaSink), (void**)&pSink);
 
-		CComQIPtr< IMFVideoRenderer > pVideoRenderer( pSink );
+		IMFVideoRenderer*  pVideoRenderer=NULL;
+		hr = pSink->QueryInterface(__uuidof(IMFVideoRenderer),(void**) &pVideoRenderer);
 
 		//ThrowIfFail( pVideoRenderer->InitializeRenderer( NULL, pVideoPresenter ) );
 		hr = pVideoRenderer->InitializeRenderer( NULL, pVideoPresenter ) ;
