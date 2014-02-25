@@ -36,6 +36,16 @@ ofxWMFVideoPlayer::ofxWMFVideoPlayer() : _player(NULL)
 {
 	
 	if (_instanceCount ==0)  {
+		if (!ofIsGLProgrammableRenderer()){
+			if(wglewIsSupported("WGL_NV_DX_interop")){
+				ofLogVerbose("ofxWMFVideoPlayer") << "WGL_NV_DX_interop supported";
+			}else{
+				ofLogError("ofxWMFVideoPlayer") << "WGL_NV_DX_interop not supported. Upgrade your graphc drivers and try again.";
+				return;
+			}
+		}
+
+
 		HRESULT hr = MFStartup(MF_VERSION);
 	  if (!SUCCEEDED(hr))
     {
@@ -88,7 +98,10 @@ void ofxWMFVideoPlayer::forceExit()
 
  bool	ofxWMFVideoPlayer::	loadMovie(string name) 
  {
-
+	 if (!_player) { 
+		ofLogError("ofxWMFVideoPlayer") << "Player not created. Can't open the movie.";
+		 return false;
+	 }
 	 	DWORD fileAttr = GetFileAttributesA(ofToDataPath(name).c_str());
 		if (fileAttr == INVALID_FILE_ATTRIBUTES) {
 		stringstream s;
@@ -179,7 +192,7 @@ bool  ofxWMFVideoPlayer:: isPaused()
 
 }
 void	ofxWMFVideoPlayer::	update() {
-
+	if (!_player) return;
 	if ((_waitForLoadedToPlay) && _player->GetState() == Paused)
 	{
 		_waitForLoadedToPlay=false;
@@ -195,7 +208,7 @@ void	ofxWMFVideoPlayer::	update() {
 void	ofxWMFVideoPlayer::	play() 
 {
 
-
+	if (!_player) return;
 	if (_player->GetState()  == OpenPending) _waitForLoadedToPlay = true;
 	_player->Play();
 }
