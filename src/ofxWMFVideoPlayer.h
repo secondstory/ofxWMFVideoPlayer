@@ -34,6 +34,8 @@ class ofxWMFVideoPlayer {
 
 		bool _waitForLoadedToPlay;
 		bool _isLooping;
+		bool _wantToSetVolume;
+		float _currentVolume;
 
 		bool _sharedTextureCreated;
 		
@@ -43,6 +45,7 @@ class ofxWMFVideoPlayer {
 
 		
 		void                OnPlayerEvent(HWND hwnd, WPARAM pUnkPtr);
+
 
 
 	public:
@@ -67,6 +70,9 @@ class ofxWMFVideoPlayer {
 	 float				getDuration();
 
 	 void				setPosition(float pos);
+
+	 void				setVolume(float vol);
+	 float				getVolume();
 
 	 float				getHeight();
 	 float				getWidth();

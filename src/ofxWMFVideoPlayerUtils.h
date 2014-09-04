@@ -105,6 +105,10 @@ public:
 	bool isLooping() { return _isLooping; }
 	void setLooping(bool isLooping) { _isLooping = isLooping; }
 
+	
+	HRESULT setVolume(float vol);
+	float   getVolume() { return _currentVolume; }
+
 
 
 protected:
@@ -145,6 +149,7 @@ protected:
     HWND                    m_hwndEvent;        // App window to receive events.
     PlayerState             m_state;            // Current state of the media session.
     HANDLE                  m_hCloseEvent;      // Event to wait on while closing.
+	IMFAudioStreamVolume   *m_pVolumeControl;
 
 public:
 	EVRCustomPresenter * m_pEVRPresenter; // Custom EVR for texture sharing
@@ -156,7 +161,7 @@ public:
 protected:
 	int _width;
 	int _height;
-
+	float _currentVolume;
 };
 
 #endif PLAYER_H

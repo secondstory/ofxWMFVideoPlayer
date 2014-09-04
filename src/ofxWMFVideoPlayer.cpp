@@ -60,6 +60,8 @@ ofxWMFVideoPlayer::ofxWMFVideoPlayer() : _player(NULL)
 
 	_waitForLoadedToPlay = false;
 	_sharedTextureCreated = false;
+	_wantToSetVolume = false;
+	_currentVolume = 1.0;
 	
 	
 }
@@ -189,6 +191,8 @@ bool  ofxWMFVideoPlayer:: isPaused()
 
  void	ofxWMFVideoPlayer::	close() {
 	 _player->Shutdown();
+	 _currentVolume = 1.0;
+	 _wantToSetVolume = false;
 
 }
 void	ofxWMFVideoPlayer::	update() {
@@ -198,6 +202,12 @@ void	ofxWMFVideoPlayer::	update() {
 		_waitForLoadedToPlay=false;
 		_player->Play();
 		
+	}
+
+	if ((_wantToSetVolume))
+	{
+		_player->setVolume(_currentVolume);
+
 	}
 	return;
  }
@@ -235,6 +245,24 @@ float 			ofxWMFVideoPlayer::	getDuration() {
 void ofxWMFVideoPlayer::setPosition(float pos)
 {
 	_player->setPosition(pos);
+}
+
+void ofxWMFVideoPlayer::setVolume(float vol)
+{
+	if ((_player ) && (_player->GetState() != OpenPending) && (_player->GetState() != Closing) && (_player->GetState() != Closed))  {
+		_player->setVolume(vol);
+		_wantToSetVolume = false;
+	}
+	else {
+		_wantToSetVolume = true;
+	}
+	_currentVolume = vol;
+
+}
+
+float ofxWMFVideoPlayer::getVolume()
+{
+	return _player->getVolume();
 }
 
 float	ofxWMFVideoPlayer::getHeight() { return _player->getHeight(); }
