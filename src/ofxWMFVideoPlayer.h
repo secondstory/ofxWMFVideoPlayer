@@ -46,6 +46,8 @@ class ofxWMFVideoPlayer {
 		
 		void                OnPlayerEvent(HWND hwnd, WPARAM pUnkPtr);
 
+		float _frameRate;
+
 
 
 	public:
@@ -58,7 +60,7 @@ class ofxWMFVideoPlayer {
 	 ~ofxWMFVideoPlayer();
 
 	 bool				loadMovie(string name);
-	 bool 				loadMovie(string name_left, string name_right) ;
+	 //bool 				loadMovie(string name_left, string name_right) ;
 	 void				close();
 	 void				update();
 	
@@ -68,6 +70,7 @@ class ofxWMFVideoPlayer {
 
 	 float				getPosition();
 	 float				getDuration();
+	 float				getFrameRate();
 
 	 void				setPosition(float pos);
 

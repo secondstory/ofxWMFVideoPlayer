@@ -1418,6 +1418,53 @@ float CPlayer::getPosition() {
 	return position;
 }
 
+float CPlayer::getFrameRate() {
+	float fps = 0.0;
+	if (m_pSource == NULL)
+		return 0.0;
+	IMFPresentationDescriptor *pDescriptor = NULL;
+	IMFStreamDescriptor *pStreamHandler = NULL;
+	IMFMediaTypeHandler *pMediaType = NULL;
+	IMFMediaType  *pType;
+	DWORD nStream;
+	if FAILED(m_pSource->CreatePresentationDescriptor(&pDescriptor)) goto done;
+	if FAILED(pDescriptor->GetStreamDescriptorCount(&nStream)) goto done;
+	for (int i = 0; i < nStream; i++)
+	{
+		BOOL selected;
+		GUID type;
+		if FAILED(pDescriptor->GetStreamDescriptorByIndex(i, &selected, &pStreamHandler)) goto done;
+		if FAILED(pStreamHandler->GetMediaTypeHandler(&pMediaType)) goto done;
+		if FAILED(pMediaType->GetMajorType(&type)) goto done;
+		if FAILED(pMediaType->GetCurrentMediaType(&pType)) goto done;
+		if (type  == MFMediaType_Video)
+		{
+			UINT32 num = 0;
+			UINT32 denum = 1;
+
+			MFGetAttributeRatio(
+				pType,
+				MF_MT_FRAME_RATE,
+				&num,
+				&denum
+				);
+			if (denum != 0) fps = (float) num /  (float) denum;
+		}
+	
+
+		SafeRelease(&pStreamHandler);
+		SafeRelease(&pMediaType);
+		SafeRelease(&pType);
+		if (fps != 0.0) break; // we found the right stream, no point in continuing the loop
+	}
+done:
+	SafeRelease(&pDescriptor);
+	SafeRelease(&pStreamHandler);
+	SafeRelease(&pMediaType);
+	SafeRelease(&pType);
+	return fps;
+}
+
 
 
 HRESULT CPlayer:: SetMediaInfo( IMFPresentationDescriptor *pPD ) {

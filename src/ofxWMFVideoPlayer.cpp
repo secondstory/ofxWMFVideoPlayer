@@ -62,6 +62,7 @@ ofxWMFVideoPlayer::ofxWMFVideoPlayer() : _player(NULL)
 	_sharedTextureCreated = false;
 	_wantToSetVolume = false;
 	_currentVolume = 1.0;
+	_frameRate = 0.0f;
 	
 	
 }
@@ -123,7 +124,7 @@ void ofxWMFVideoPlayer::forceExit()
 	hr = _player->OpenURL( w.c_str());
 
 	
-	 
+	_frameRate = 0.0; //reset frameRate as the new movie loaded might have a different value than previous one
 
 
 	
@@ -155,6 +156,7 @@ void ofxWMFVideoPlayer::forceExit()
 		 
 	 }
 	 _waitForLoadedToPlay = false;
+
 	 return false;
 
 	
@@ -263,6 +265,13 @@ void ofxWMFVideoPlayer::setVolume(float vol)
 float ofxWMFVideoPlayer::getVolume()
 {
 	return _player->getVolume();
+}
+
+float ofxWMFVideoPlayer::getFrameRate()
+{
+	if (!_player) return 0.0f;
+	if (_frameRate == 0.0f) _frameRate = _player->getFrameRate();
+	return _frameRate;
 }
 
 float	ofxWMFVideoPlayer::getHeight() { return _player->getHeight(); }
@@ -400,4 +409,6 @@ BOOL ofxWMFVideoPlayer::InitInstance()
 
     return TRUE;
 }
+
+
 

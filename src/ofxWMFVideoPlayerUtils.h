@@ -109,6 +109,7 @@ public:
 	HRESULT setVolume(float vol);
 	float   getVolume() { return _currentVolume; }
 
+	float getFrameRate();
 
 
 protected:
