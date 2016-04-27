@@ -27,4 +27,13 @@ Copy (and rename) a mp4 file as "test.mp4" into the data folder and run the exam
 The texture sharing we are using is based upon an NVIDIA extension but AMD/ATI cards claims they support it was well, even though sometimes it gets more finicky.
 Feedback on working/not working cards and drivers are more than welcomed.
 
+##Troubleshooting
 
+In some instance we have noticed that the video appears "washed out". If you are noticing this it is due to a NVIDIA card setting that sets colors to a limited range of 16-235. You can fix this by doing the following:
+
+* Open the nVidia Control Panel
+* Adjust Video Color Settings
+* Make Color Adjustments
+* With nVidia Settings
+* Select Advanced Tab
+* Set Dynamic Range to: Full (0-255)
